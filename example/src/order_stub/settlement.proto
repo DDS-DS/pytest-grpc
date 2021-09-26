@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package settlement;
+option go_package = "app/protocol/grpc/settlement";
+
+import "code.proto";
+
+// v2
+message SettlementCalculateReq {
+  //@inject_tag:validate:"required"
+  string business_code = 1;
+  string country = 2;
+  //@inject_tag:validate:"required"
+  string order_id = 3;
+  //@inject_tag:validate:"required"
+  string user_id = 4;
+  repeated SettlementOrderItemStartInfo order_items = 5;
+  repeated SettlementDiscountInfoStartInfo discount_infos = 6;
+  SettlementAddressInfoStartInfo address = 7;
+  string store_id = 8;
+}
+
+message SettlementOrderItemStartInfo {
+  string item_id = 1;
+  string spu_id = 2;
+  string sku_id = 3;
+  int32 quantity = 4;
+}
+
+message SettlementDiscountInfoStartInfo {
+  int64 amount = 1;
+  string currency = 2;
+  string value = 3;
+  string discount_type = 4;
+}
+
+message SettlementAddressInfoStartInfo {
+  string country = 1;
+  string state = 2;
+  string city = 3;
+  string district = 4;
+  string detail = 5;
+  string postcode = 6;
+  string ward = 7;
+}
+
+message SettlementCalculateResult {
+  repeated SettlementCalculateResultItem calculate_results = 1;
+
+  code.Code code = 2;
+  string msg = 3;
+}
+
+message SettlementCalculateResultItem {
+  string target_id = 1;
+  int64 amount = 2;
+  string amount_type = 3;
+  string currency = 4;
+  string settlement_target = 5;
+  map<string, string> labels = 6;
+  string settlement_type = 7;
+  repeated SettlementCalculateRebateInfoItem rebate_infos = 8;
+  string settlement_type_detail = 9;
+}
+
+message SettlementCalculateRebateInfoItem {
+  string rebate_scope = 1;
+  string rebate_target_id = 2;
+  // 后期将废弃
+  double user_rebate_rate = 3 [deprecated=true];
+  int64 user_rebate_amount_limit = 4;
+  // 后期将废弃
+  double merchant_apportion_rebate_rate = 5 [deprecated=true];
+  // 后期将废弃
+  double platform_apportion_rebate_rate = 6 [deprecated=true];
+  repeated GradientRebateRate gradient_rebate_rates = 7;
+}
+
+message GradientRebateRate {
+  int64 start_amount = 1;
+  int64 end_amount = 2;
+  double base_rebate_rate = 3;
+  int64 max_base_rebate_amount = 4;
+  double extra_rebate_rate = 5;
+  int64 max_extra_rebate_amount = 6;
+  double merchant_apportion_rebate_rate = 7;
+}
+
+message SettlementLockReq {
+  //@inject_tag:validate:"required"
+  string business_code = 1;
+  string country = 2;
+  //@inject_tag:validate:"required"
+  string order_id = 3;
+  //@inject_tag:validate:"required"
+  string user_id = 4;
+  repeated SettlementOrderItemStartInfo order_items = 5;
+  repeated SettlementDiscountInfoStartInfo discount_infos = 6;
+}
+
+message SettlementAskLockResult {
+  string start_timing = 1;
+
+  code.Code code = 2;
+  string msg = 3;
+}
+
+message SettlementStartLockResult {
+  string settlement_trans_id = 1;
+  int64 settlement_trans_expire = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}
+
+message SettlementConfirmReqV2 {
+  string settlement_trans_id = 1;
+}
+
+// V1, 即将废弃
+message SettlementStartReq {
+  //@inject_tag:validate:"required"
+  string business_code = 1;
+  //@inject_tag:validate:"required"
+  string transaction_id = 2;
+  //@inject_tag:validate:"required"
+  string user_id = 3;
+  //@inject_tag:validate:"required"
+  string settlement_type = 4;
+  repeated SettlementOrderItemStartInfo order_items = 5;
+  SettlementDiscountInfoStartInfo discount_info = 6;
+  SettlementAddressInfoStartInfo address = 7;
+  string country = 8;
+}
+
+message SettlementStartResult {
+  string settlement_id = 1;
+  int64 amount = 2;
+  string amount_type = 3;
+  string currency = 4;
+  string settlement_target = 5;
+  map<string, string> labels = 6;
+
+  code.Code code = 7;
+  string msg = 8;
+}
+
+message SettlementConfirmReq {
+  //@inject_tag:validate:"required"
+  string settlement_id = 1;
+}

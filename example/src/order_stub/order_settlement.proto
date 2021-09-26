@@ -4,7 +4,7 @@ package order;
 option go_package = "app/protocol/grpc/order";
 
 import "code.proto";
-import "settlement/settlement.proto";
+import "settlement.proto";
 
 message OrderSettlementListResultV2 {
   // @inject_tag: json:"data"

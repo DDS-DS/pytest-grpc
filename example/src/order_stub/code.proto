@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package code;
+option go_package = "app/protocol/grpc";
+
+// code的组成：服务代号 + 服务内的业务code，比如订单服务代号11，业务码001，组合为11001
+// 999以内的则是通用错误码
+// 关于code和error的问题：当有业务错时使用response里的code，此时error为nil，
+// 当本身有内部错误或者数据库操作错误时使用error，可以的话response里的code可设置成适合的码，比如内部错误code使用UnknownInternalError， 数据库错误code使用DBError
+enum Code {
+  Ok = 0;
+  UnknownInternalErr = 1; // 未知内部错误, 建议具体错误场景自定义（错误码规范待定）
+  DBErr = 2; // 数据库发生意外错误
+  InvalidRequestParams = 3; // 参数错误
+
+  // user_group服务
+  UGUnsupportedGroup = 10001; // 不支持的用户组
+
+  // order服务
+  OrderStatusNotChange = 11001;
+  OrderNotFound = 11002;
+  OrderStatusError = 11003;
+  OrderLogisticsCompanyNotFound = 11004;
+  OrderProductNotFound = 11005;
+  OrderNotBelongUser = 11006;
+  OrderPaymentPlatformMethodIdNotFound = 11007;
+  CodOrderNotChangeOtherPaymentMethod = 11008;
+  OrderNormalProductShouldBelongSameStore = 11009;
+  OrderServiceProductShouldPointItem = 11010;
+  OrderBillNotFound = 11011;
+  OrderBillStatusError = 11012;
+  OrderBillAmountOrCurrencyNotMatch = 11013;
+  OrderTransactionShouldBelongSameCountry = 11014;
+  BusinessCodeNoMatch = 11015;
+  OrderPrivilegeProductNoSupportCod = 11016;
+  OrderShippingFeeCalculateError = 11017;
+  RebateOrderQueryError = 11018;
+  OrderSettlementCalculateError = 11019;
+  APartOfOrderCreateError = 11020;
+  OrderSettlementConfirmError = 11021;
+  OrderNoVirtualGoodsNeedDeliveryError = 11022;
+  OrderSettlementLockError = 11023;
+  OrderOfflineMerchantNotFoundError = 11024;
+  OrderSettlementAskError = 11025;
+}

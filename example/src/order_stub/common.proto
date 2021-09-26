@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package common;
+option go_package = "app/protocol/grpc";
+
+import "code.proto";
+
+message BaseResult {
+  int32 code = 1;
+  string msg = 2;
+}
+
+message Page {
+  // @inject_tag: json:"total"
+  int64 total = 1;
+}
+
+message Empty {
+  code.Code code = 1;
+  string msg = 2;
+}
+
+// 通用查询协议
+message QueryInfo {
+  repeated string fields = 1;
+  map<string, WhereOperation> where = 2;
+  int64 skip = 3;
+  int64 limit = 4;
+  repeated OrderBy order_by = 5;
+  string operator_id = 6;
+  string operator_name = 7;
+}
+
+message WhereOperation {
+  repeated Operation operation = 1;
+}
+
+message Operation {
+  string value_type = 1;
+  string opt = 2;
+  repeated string values = 3;
+}
+
+message OrderBy {
+  string field = 1;
+  string sort = 2;
+}

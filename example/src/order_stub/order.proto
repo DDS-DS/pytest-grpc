@@ -6,7 +6,7 @@ option go_package = "app/protocol/grpc/order";
 import "order_review.proto";
 import "order_settlement.proto";
 import "code.proto";
-import "settlement/settlement.proto";
+import "settlement.proto";
 
 message OrderCreateReq {
   //@inject_tag:validate:"required"
