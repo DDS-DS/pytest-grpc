@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package order;
+option go_package = "app/protocol/grpc/order";
+
+import "code.proto";
+
+message OrderBill {
+  string    id = 1;
+  string    order_id = 2;
+  string    trade_id = 3;
+  string    payment_id = 4;
+  string    platform_method_id = 5;
+  // @inject_tag: json:"platform_name"
+  string    platform_name = 6;
+  // @inject_tag: json:"method_name"
+  string    method_name = 7;
+  // @inject_tag: json:"bill_type"
+  string    bill_type = 8;
+  string    payment_status = 9;
+  // @inject_tag: json:"amount"
+  int64     amount = 10;
+  string    currency = 11;
+  // @inject_tag: json:"country"
+  string    country = 12;
+  // @inject_tag: json:"create_at"
+  int64 create_at = 13;
+  // @inject_tag: json:"update_at"
+  int64 update_at = 14;
+  // @inject_tag: json:"business_code"
+  string business_code = 15;
+  int64 pay_at = 16;
+}
+
+message OrderBillCreateReq {
+  //@inject_tag:validate:"required"
+  string business_code = 1;
+  //@inject_tag:validate:"required"
+  string user_id = 2;
+  //@inject_tag:validate:"required"
+  string username = 3;
+  //@inject_tag:validate:"required"
+  string platform_method_id = 4;
+  //@inject_tag:validate:"min=1"
+  repeated string order_ids = 5;
+}
+
+message OrderBillCreateResult {
+  string trade_id = 1;
+  // @inject_tag: json:"amount"
+  int64 amount = 2;
+  string currency = 3;
+
+  code.Code code = 4;
+  string msg = 5;
+}
+
+message OrderBillListResult {
+  // @inject_tag: json:"data"
+  repeated OrderBill data = 1;
+  // @inject_tag: json:"total"
+  int64 total = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}

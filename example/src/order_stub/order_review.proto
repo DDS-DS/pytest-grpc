@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package order;
+option go_package = "app/protocol/grpc/order";
+
+
+message OrderReviewInfo {
+  string id = 1;
+  // @inject_tag: json:"method"
+  string    method = 2;
+  // @inject_tag: json:"remark"
+  string    remark = 3;
+  // @inject_tag: json:"result"
+  string    result = 4;
+}

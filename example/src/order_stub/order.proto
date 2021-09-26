@@ -1,0 +1,304 @@
+syntax = "proto3";
+
+package order;
+option go_package = "app/protocol/grpc/order";
+
+import "order_review.proto";
+import "order_settlement.proto";
+import "code.proto";
+import "settlement/settlement.proto";
+
+message OrderCreateReq {
+  //@inject_tag:validate:"required"
+  string user_id = 1;
+  //@inject_tag:validate:"required"
+  string username = 2;
+  //@inject_tag:validate:"required"
+  string business_code = 3;
+  //@inject_tag:validate:"min=1,dive"
+  repeated OrderCreateInfo orders = 4;
+}
+
+message OrderCreateInfo {
+  //@inject_tag:validate:"required"
+  string country = 1;
+  //@inject_tag:validate:"required"
+  string order_type = 2;
+  //@inject_tag:validate:"min=1,dive"
+  repeated OrderItemCreateInfo order_items = 3;
+  //@inject_tag:validate:"gte=0"
+  int64 logistics_amount = 4;
+  //@inject_tag:validate:"required"
+  string payment_method = 5;
+  //@inject_tag:validate:"dive"
+  OrderAddressCreateInfo address = 6;
+  map<string, string> labels = 7;
+  string remark = 8;
+  repeated OrderDiscountCreateInfo discounts = 9;
+}
+
+message OrderItemCreateInfo {
+  string item_id = 1;
+  //@inject_tag:validate:"required"
+  string spu_id = 2;
+  //@inject_tag:validate:"required"
+  string sku_id = 3;
+  repeated string bind_item_ids = 4;
+  int32 quantity = 5;
+}
+
+message OrderAddressCreateInfo {
+  string name = 1;
+  string mobile = 2;
+  string country = 3;
+  string state = 4;
+  string city = 5;
+  string district = 6;
+  string detail = 7;
+  string postcode = 8;
+  string email = 9;
+  string ward = 10;
+  string recharge_phone = 11;
+}
+
+message OrderDiscountCreateInfo {
+  string discount_type = 1;
+  OrderDiscountInfo discount_info = 2;
+}
+
+message OrderDiscountInfo {
+  int64 amount = 1;
+  string currency = 2;
+  string value = 3;
+}
+
+message OrderListResult {
+  // @inject_tag: json:"data"
+  repeated Order data = 1;
+  // @inject_tag: json:"total"
+  int64 total = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}
+
+message OrderCreateResult {
+  // @inject_tag: json:"orders"
+  repeated Order orders = 1;
+  // @inject_tag: json:"errors"
+  repeated CreateOrderError errors = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}
+
+message CreateOrderError {
+  int32 index = 1;
+  int32 code = 2;
+  string msg = 3;
+}
+
+message MerchantOrderCreateReq {
+  //@inject_tag:validate:"required"
+  string customer_user_id = 1;
+  //@inject_tag:validate:"required"
+  string merchant_user_id = 2;
+  //@inject_tag:validate:"required"
+  string business_code = 3;
+  //@inject_tag:validate:"required"
+  string store_id = 4;
+  //@inject_tag:validate:"required"
+  string country = 5;
+  //@inject_tag:validate:"required"
+  string order_type = 6;
+  //@inject_tag:validate:"gte=0"
+  int64 total_amount = 7;
+  string remark = 8;
+  map<string, string> labels = 9;
+  repeated OrderDiscountCreateInfo discounts = 10;
+  string currency = 11;
+}
+
+message MerchantOrderCreateResult {
+  code.Code code = 1;
+  string msg = 2;
+  Order order = 3;
+}
+
+message Order {
+  string    id = 1;
+  string    user_id = 2;
+  string    order_type = 3;
+  string    status = 4;
+  // @inject_tag: json:"total_amount"
+  int64     total_amount = 6;
+  // @inject_tag: json:"items_amount"
+  int64     items_amount = 7;
+  // @inject_tag: json:"logistics_amount"
+  int64     logistics_amount = 8;
+  // @inject_tag: json:"discount_amount"
+  int64     discount_amount = 9;
+  string    currency = 10;
+  // @inject_tag: json:"country"
+  string    country = 11;
+  string    fulfill_method = 12;
+  string    store_id = 13;
+  // @inject_tag: json:"review_info"
+  OrderReviewInfo review_info = 14;
+  // @inject_tag: json:"cancel_reason"
+  string    cancel_reason = 16;
+  // @inject_tag: json:"platform_remark"
+  string    platform_remark = 17;
+  // @inject_tag: json:"seller_remark"
+  string    seller_remark = 18;
+  // @inject_tag: json:"user_remark"
+  string    user_remark = 19;
+  // @inject_tag: json:"create_at"
+  int64 create_at = 20;
+  // @inject_tag: json:"update_at"
+  int64 update_at = 21;
+  // @inject_tag: json:"items"
+  repeated OrderItem items = 22;
+  // @inject_tag: json:"address"
+  OrderAddress address = 23;
+  // @inject_tag: json:"payment_type"
+  string payment_type = 24;
+  // @inject_tag: json:"cost_amount"
+  int64     cost_amount = 25;
+  // @inject_tag: json:"business_code"
+  string business_code = 26;
+  // @inject_tag: json:"business_type"
+  string business_type = 27;
+  // @inject_tag: json:"labels"
+  map<string, string> labels = 28;
+  // @inject_tag: json:"cancel_at"
+  int64 cancel_at = 29;
+  // @inject_tag: json:"return_remark"
+  string return_remark = 30;
+  // @inject_tag: json:"return_at"
+  int64 return_at = 31;
+  repeated OrderSettlementV2 settlements = 32;
+  string merchant_user_id = 33;
+}
+
+message OrderItem {
+  string            item_id = 12;
+  string            spu_id = 1;
+  string            sku_id = 2;
+  // @inject_tag: json:"title"
+  string            title = 3;
+  // @inject_tag: json:"image"
+  string            image = 4;
+  map<string, string> sku_prop = 5;
+  // @inject_tag: json:"original_amount"
+  int64             original_amount = 6;
+  // @inject_tag: json:"sale_amount"
+  int64             sale_amount = 7;
+  // @inject_tag: json:"discount_amount"
+  int64             discount_amount = 8;
+  // @inject_tag: json:"total_amount"
+  int64             total_amount = 9;
+  string            currency = 10;
+  // @inject_tag: json:"quantity"
+  int64             quantity = 11;
+  // @inject_tag: json:"cost_amount"
+  int64     cost_amount = 14;
+  // @inject_tag: json:"store_id"
+  string store_id = 15;
+  // @inject_tag: json:"product_type"
+  string product_type = 16;
+  // @inject_tag: json:"business_type"
+  string business_type = 17;
+  // @inject_tag: json:"supplier_id"
+  string supplier_id = 18;
+  // 后期废弃，整合进gradient_rebate_rates
+  // @inject_tag: json:"user_rebate_rate"
+  double user_rebate_rate = 19 [deprecated=true];
+  // @inject_tag: json:"channel_rebate_rate"
+  double channel_rebate_rate = 20;
+  // @inject_tag: json:"bind_item_ids"
+  repeated string bind_item_ids = 21;
+  // @inject_tag: json:"labels"
+  map<string, string> labels = 22;
+  // @inject_tag: json:"category_id"
+  string category_id = 23;
+  int64 user_rebate_amount_limit = 24;
+  // 后期废弃
+  double merchant_apportion_rebate_rate = 25 [deprecated=true];
+  // 后期废弃
+  double platform_apportion_rebate_rate = 26 [deprecated=true];
+  repeated settlement.GradientRebateRate gradient_rebate_rates = 27;
+}
+
+message OrderAddress {
+  // @inject_tag: json:"name"
+  string name = 1;
+  // @inject_tag: json:"mobile"
+  string mobile = 2;
+  // @inject_tag: json:"country"
+  string country = 3;
+  // @inject_tag: json:"state"
+  string state = 4;
+  // @inject_tag: json:"city"
+  string city = 5;
+  // @inject_tag: json:"district"
+  string district = 6;
+  // @inject_tag: json:"detail"
+  string detail = 7;
+  // @inject_tag: json:"postcode"
+  string postcode = 8;
+  // @inject_tag: json:"email"
+  string email = 9;
+  string ward = 10;
+  // @inject_tag: json:"mobile"
+  string recharge_phone = 11;
+}
+
+message OrderUpdateContent {
+  //@inject_tag:validate:"required"
+  string business_code = 1;
+  //@inject_tag:validate:"required"
+  string order_id = 2;
+  string user_id = 3;
+  string username = 4;
+  //@inject_tag:validate:"required"
+  string action = 5;
+  OrderUpdateActionParams action_params = 6;
+  //@inject_tag:validate:"required"
+  string user_type = 7;
+}
+
+message OrderUpdateActionParams {
+  string review_method = 1;
+  string review_remark = 2;
+  string cancel_reason = 3;
+  string platform_remark = 4;
+  string seller_remark = 5;
+  string str_param1 = 6;
+  int64 int_param1 = 7;
+  string return_remark = 8;
+  repeated OrderPackageUpdateParam packages = 9;
+  map<string, string> labels = 10;
+  OrderAddressUpdateParam address = 11;
+  int64 total_amount = 12;
+}
+
+message OrderPackageUpdateParam {
+  repeated string item_ids = 1;
+  string logistics_company_id = 2;
+  string tracking_no = 3;
+}
+
+message OrderAddressUpdateParam {
+  string name = 1;
+  string mobile = 2;
+  string country = 3;
+  string state = 4;
+  string city = 5;
+  string district = 6;
+  string ward = 7;
+  string detail = 8;
+  string postcode = 9;
+  string email = 10;
+  string recharge_phone = 11;
+}

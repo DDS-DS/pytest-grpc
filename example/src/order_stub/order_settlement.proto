@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package order;
+option go_package = "app/protocol/grpc/order";
+
+import "code.proto";
+import "settlement/settlement.proto";
+
+message OrderSettlementListResultV2 {
+  // @inject_tag: json:"data"
+  repeated OrderSettlementV2 data = 1;
+  // @inject_tag: json:"total"
+  int64 total = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}
+
+message OrderSettlementV2 {
+  string id = 1;
+  string order_id = 2;
+  string settlement_trans_id = 3;
+  string status = 4;
+  string settlement_type = 5;
+  string lock_timing = 6;
+  // @inject_tag: json:"settlement_results"
+  repeated OrderSettlementResultV2 settlement_results = 7;
+  // @inject_tag: json:"labels"
+  map<string, string> labels = 8;
+  int64 create_at = 9;
+  int64 update_at = 10;
+  string business_code = 11;
+  string country = 12;
+}
+
+message OrderSettlementResultV2 {
+  string settlement_value = 1;
+  string settlement_target = 2;
+  // @inject_tag: json:"amount"
+  int64 amount = 3;
+  string amount_type = 4;
+  string currency = 5;
+  string settlement_type_detail = 6;
+  repeated OrderSettlementRebateInfoItem rebate_infos = 7;
+}
+
+message OrderSettlementRebateInfoItem {
+  string rebate_scope = 1;
+  string rebate_target_id = 2;
+  // 后期将废除
+  double user_rebate_rate = 3 [deprecated=true];
+  int64 user_rebate_amount_limit = 4;
+  // 后期将废除
+  double merchant_apportion_rebate_rate = 5 [deprecated=true];
+  // 后期将废除
+  double platform_apportion_rebate_rate = 6 [deprecated=true];
+  repeated settlement.GradientRebateRate gradient_rebate_rates = 7;
+}
+
+// v1, 即将废弃 =================================================
+message OrderSettlementListResult {
+  // @inject_tag: json:"data"
+  repeated OrderSettlement data = 1;
+  // @inject_tag: json:"total"
+  int64 total = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}
+
+message OrderSettlement {
+  string id = 1;
+  string order_id = 2;
+  // @inject_tag: json:"settlement_trans_id"
+  string settlement_trans_id = 3;
+  string status = 4;
+  // @inject_tag: json:"settlement_type"
+  string settlement_type = 5;
+  // @inject_tag: json:"settlement_value"
+  string settlement_value = 6;
+  // @inject_tag: json:"settlement_target"
+  string settlement_target = 7;
+  // @inject_tag: json:"amount"
+  int64 amount = 8;
+  // @inject_tag: json:"amount_type"
+  string amount_type = 9;
+  string currency = 10;
+  // @inject_tag: json:"labels"
+  map<string, string> labels = 11;
+  int64 create_at = 12;
+  int64 update_at = 13;
+  string business_code = 14;
+  string country = 15;
+}

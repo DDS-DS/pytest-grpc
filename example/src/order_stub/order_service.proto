@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package order;
+option go_package = "app/protocol/grpc/order";
+
+import "order.proto";
+import "order_bill.proto";
+import "order_operation_log.proto";
+import "order_package.proto";
+import "order_settlement.proto";
+import "common.proto";
+
+service OrderService {
+  // 订单
+  rpc CreateOrder(OrderCreateReq) returns (OrderCreateResult);
+  rpc CreateMerchantOrder(MerchantOrderCreateReq) returns(MerchantOrderCreateResult);
+  rpc GetOrderList(common.QueryInfo) returns (OrderListResult);
+  rpc UpdateOrderByAction (OrderUpdateContent) returns (common.Empty);
+  // 账单
+  rpc CreateBill(OrderBillCreateReq) returns (OrderBillCreateResult);
+  rpc GetBillList (common.QueryInfo) returns (OrderBillListResult);
+  // 操作日志
+  rpc GetOrderOperationLogList(common.QueryInfo) returns (OrderOperationLogListResult);
+  // 物流相关，V2兼容V1，后期接入TMS后可废弃
+  rpc GetPackageList(common.QueryInfo) returns (OrderPackageListResult);
+  // 结算
+  rpc GetSettlementList(common.QueryInfo) returns (OrderSettlementListResultV2);
+}

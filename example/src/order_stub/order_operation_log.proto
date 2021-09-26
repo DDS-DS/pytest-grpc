@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package order;
+option go_package = "app/protocol/grpc/order";
+
+import "code.proto";
+
+message OrderOperationLog {
+  string    id = 1;
+  // @inject_tag: json:"operation"
+  string    operation = 2;
+  // @inject_tag: json:"remark"
+  string    remark = 3;
+  // @inject_tag: json:"operator_id"
+  string    operator_id = 4;
+  // @inject_tag: json:"operator_name"
+  string    operator_name = 5;
+  // @inject_tag: json:"create_at"
+  int64 create_at = 6;
+  string order_id = 7;
+}
+
+message OrderOperationLogListResult {
+  // @inject_tag: json:"data"
+  repeated OrderOperationLog data = 1;
+  // @inject_tag: json:"total"
+  int64 total = 2;
+
+  code.Code code = 3;
+  string msg = 4;
+}
