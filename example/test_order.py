@@ -1,4 +1,5 @@
 import pytest
+import grpc
 import threading
 
 
@@ -22,8 +23,9 @@ def grpc_servicer():
 @pytest.fixture(scope='module')
 def grpc_stub(grpc_channel):
     from stub.test_pb2_grpc import EchoServiceStub
+
     from order_stub.order_service_pb2_grpc import OrderServiceStub
-    return OrderServiceStub(grpc_channel)
+    return OrderServiceStub(grpc.insecure_channel("localhost:9090"))
 
 
 def test_some(grpc_stub):

@@ -12,7 +12,7 @@ class Servicer(OrderServiceServicer):
     def __init__(self):
         self.barrier = threading.Barrier(2)
 
-    def handler(self, request: OrderCreateReq, context) -> OrderCreateResult:
+    def CreateOrder(self, request, context) -> OrderCreateResult:
         return OrderCreateResult(name=f'test-{request.name}')
 
     def error_handler(self, request: OrderCreateReq, context) -> OrderCreateResult:

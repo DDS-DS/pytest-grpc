@@ -21,7 +21,7 @@ def grpc_servicer():
 @pytest.fixture(scope='module')
 def grpc_stub(grpc_channel):
     from stub.test_pb2_grpc import EchoServiceStub
-
+    print(type(grpc_channel))
     return EchoServiceStub(grpc_channel)
 
 
