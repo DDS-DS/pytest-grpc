@@ -1,0 +1,4 @@
+{
+  "example/src/test_merchant.py::test_some": true,
+  "example/src/test_order.py": true
+}

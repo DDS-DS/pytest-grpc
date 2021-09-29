@@ -9,7 +9,7 @@ from merchant_stub.data_pb2 import UpdateSupplierReq
 @pytest.fixture(scope='module')
 def grpc_add_to_server():
     from merchant_stub.merchant_service_pb2_grpc import add_MerchantServiceServicer_to_server
-    return add_MerchantServiceServicer_to_server()
+    return add_MerchantServiceServicer_to_server
 
 
 @pytest.fixture(scope='module')
@@ -22,12 +22,12 @@ def grpc_servicer():
 def grpc_stub(grpc_channel):
 
     from merchant_stub.merchant_service_pb2_grpc import MerchantServiceStub
-    return MerchantServiceStub(grpc.insecure_channel("localhost:9090"))
+    return MerchantServiceStub(grpc.insecure_channel("10.1.152.116:9006"))
 
 
 def test_some(grpc_stub):
-    request = UpdateSupplierReq()
-    response = grpc_stub.handler(request)
+    request = UpdateSupplierReq(country='VN',name='pytest')
+    response = grpc_stub.UpsertSupplier(request)
 
     assert response.name == f'test-{request.name}'
 
