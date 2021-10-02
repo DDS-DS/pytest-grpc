@@ -1,0 +1,14 @@
+
+
+test_01:
+-
+  - supplier_id: 1001
+  - name:
+  - brand_id:
+  - incharge_user_id:
+  - settlement_date:
+  - agreement:
+  - country:
+  - category:
+  - status:
+-
